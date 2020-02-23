@@ -3,7 +3,6 @@ package com.raywenderlich.timefighter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.PersistableBundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
@@ -44,7 +43,13 @@ class MainActivity : AppCompatActivity() {
             incrementScore()
         }
 
-        resetGame()
+        if (savedInstanceState != null) {
+            score = savedInstanceState.getInt(SCORE_KEY)
+            timeLeftOnTimer = savedInstanceState.getLong(TIME_LEFT_KEY)
+            restoreGame()
+        } else {
+            resetGame()
+        }
     }
 
     private fun incrementScore() {
@@ -105,5 +110,24 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onDestroy called.")
+    }
+
+    private fun restoreGame(){
+        gameScoreText.text = getString(R.string.yourScore, score)
+
+        val restoredTiem = timeLeftOnTimer / 1000
+        timeLeftText.text = getString(R.string.timeLeft, restoredTiem)
+
+        countDownTimer = object : CountDownTimer(timeLeftOnTimer, countDownInterval) {
+            override fun onTick(millisUntilFinished: Long) {
+                timeLeftOnTimer = millisUntilFinished
+                val timeLeft = millisUntilFinished / 1000
+                timeLeftText.text = getString(R.string.timeLeft, timeLeft)
+            }
+
+            override fun onFinish() {
+                endGame()
+            }
+        }
     }
 }
