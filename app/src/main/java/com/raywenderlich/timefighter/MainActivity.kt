@@ -38,17 +38,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun incrementScore() {
-        if(!gameStarted) {
-            countDownTimer.start()
-            gameStarted = true
-        }
-
         score += 1
         val newScore = getString(R.string.yourScore, score)
         gameScoreText.text = newScore
     }
 
     private fun resetGame() {
+        if(!gameStarted) {
+            startGame()
+        }
+
         score = 0
 
         gameScoreText.text = getString(R.string.yourScore, score)
@@ -68,4 +67,9 @@ class MainActivity : AppCompatActivity() {
         }
         gameStarted = false
     }
+
+    private fun startGame(){
+            countDownTimer.start()
+            gameStarted = true
+      }
 }
