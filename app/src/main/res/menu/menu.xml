@@ -7,4 +7,9 @@
         android:icon="@android:drawable/ic_dialog_info"
         android:title="@string/aboutMenu"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/highscoreMenu"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="Highscore"
+        app:showAsAction="always" />
 </menu>

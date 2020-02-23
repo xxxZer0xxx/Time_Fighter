@@ -65,10 +65,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.actionAbout){
-            showInfo()
+        when{
+            item.itemId == R.id.actionAbout     -> showInfo()
+            item.itemId == R.id.highscoreMenu   -> showHighscore()
         }
         return true
+    }
+
+
+
+    private fun showHighscore(){
+        val dialogTitle = "Higscore"
+        val dialogList = arrayListOf<String>("15", "13", "10")
+
+        val builder =  AlertDialog.Builder(this)
+        builder.setTitle(dialogTitle)
+        builder.setMessage(dialogList[0] + "\n" + dialogList[1] + "\n" + dialogList[2])
+        builder.create().show()
     }
 
     private fun showInfo(){
