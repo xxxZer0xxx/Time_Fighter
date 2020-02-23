@@ -5,21 +5,19 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
-
-    internal var score: Int = 0
-
-    internal var gameStarted = false
-
-    internal lateinit var countDownTimer: CountDownTimer
-    internal val initialCountDown: Long = 60000
-    internal val countDownIntervall: Long = 1000
-
-
     internal lateinit var tapMeButton: Button
     internal lateinit var gameScoreText: TextView
     internal lateinit var timeLeftText: TextView
+
+    internal var score: Int = 0
+    internal var gameStarted = false
+
+    internal lateinit var countDownTimer: CountDownTimer
+    internal val initialCountDown: Long = 10000
+    internal val countDownInterval: Long = 1000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,15 +36,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun incrementScore() {
+        if(!gameStarted) {
+            countDownTimer.start()
+            gameStarted = true
+        }
+
         score += 1
         val newScore = getString(R.string.yourScore, score)
         gameScoreText.text = newScore
     }
 
     private fun resetGame() {
-        if(!gameStarted) {
-            startGame()
-        }
 
         score = 0
 
@@ -55,21 +55,25 @@ class MainActivity : AppCompatActivity() {
         val initialTimeLeft = initialCountDown / 1000
         timeLeftText.text = getString(R.string.timeLeft, initialTimeLeft)
 
-        countDownTimer = object : CountDownTimer(initialCountDown, countDownIntervall) {
+        countDownTimer = object : CountDownTimer(initialCountDown, countDownInterval) {
             override fun onTick(millisUntilFinished: Long) {
                 val timeLeft = millisUntilFinished / 1000
                 timeLeftText.text = getString(R.string.timeLeft, timeLeft)
             }
 
             override fun onFinish() {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                endGame()
             }
         }
+
         gameStarted = false
     }
 
-    private fun startGame(){
-            countDownTimer.start()
-            gameStarted = true
-      }
+    private fun startGame(){}
+
+
+    private fun endGame(){
+        Toast.makeText(this, getString(R.string.gameOverMessage, score), Toast.LENGTH_LONG).show()
+        resetGame()
+    }
 }
