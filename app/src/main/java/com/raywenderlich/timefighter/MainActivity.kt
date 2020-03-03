@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     internal var score: Int = 0
     internal var gameStarted = false
-    internal  var highScores = arrayListOf<Int>()
+    internal var highScores = mutableListOf<Int>()
 
     internal lateinit var countDownTimer: CountDownTimer
     internal val initialCountDown: Long = 10000
@@ -88,22 +88,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setHighscore(){
-        highScores.add(score)
+        if (highScores.size < 11) {
+            if (highScores.any { it < score }) {
+                highScores.add(score)
+            }
+        }
     }
 
 
     private fun showHighscore(){
-        val dialogTitle = "Higscore"
+        val dialogTitle = "Highscore"
         val dialogList = highScores
 
         val builder =  AlertDialog.Builder(this)
         builder.setTitle(dialogTitle)
-        builder.setMessage(dialogList[0])
+        builder.setMessage(dialogList.size.toString())
         builder.create().show()
     }
 
     private fun showInfo(){
-        val dialogTitle = getString(R.string.aboutTitle, BuildConfig.VERSION_NAME)
+        val dialogTitle = getString(R.string.aboutTitle)
         val dialogMessage = getString(R.string.aboutMessage)
 
         val builder = AlertDialog.Builder(this)
