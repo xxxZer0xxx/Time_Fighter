@@ -16,9 +16,11 @@ class MainActivity : AppCompatActivity() {
     internal lateinit var tapMeButton: Button
     internal lateinit var gameScoreText: TextView
     internal lateinit var timeLeftText: TextView
+    internal lateinit var dontTapButton: Button
 
     internal var score: Int = 0
     internal var gameStarted = false
+    internal  var highScores = arrayListOf<Int>()
 
     internal lateinit var countDownTimer: CountDownTimer
     internal val initialCountDown: Long = 10000
@@ -40,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         tapMeButton = findViewById(R.id.tapMeButton)
         gameScoreText = findViewById(R.id.gameScoreText)
         timeLeftText = findViewById(R.id.timeLeftText)
+        dontTapButton = findViewById(R.id.dontButton)
 
         gameScoreText.text = getString(R.string.yourScore, score)
 
@@ -49,12 +52,24 @@ class MainActivity : AppCompatActivity() {
             incrementScore()
         }
 
+        dontTapButton.setOnClickListener { _ ->
+            decreaseScore()
+        }
+
         if (savedInstanceState != null) {
             score = savedInstanceState.getInt(SCORE_KEY)
             timeLeftOnTimer = savedInstanceState.getLong(TIME_LEFT_KEY)
             restoreGame()
         } else {
             resetGame()
+        }
+    }
+
+    private fun decreaseScore() {
+        if (gameStarted) {
+            score -= 1
+            val newScore : String = getString(R.string.yourScore, score)
+            gameScoreText.text = newScore
         }
     }
 
@@ -72,15 +87,18 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    private fun setHighscore(){
+        highScores.add(score)
+    }
 
 
     private fun showHighscore(){
         val dialogTitle = "Higscore"
-        val dialogList = arrayListOf<String>("15", "13", "10")
+        val dialogList = highScores
 
         val builder =  AlertDialog.Builder(this)
         builder.setTitle(dialogTitle)
-        builder.setMessage(dialogList[0] + "\n" + dialogList[1] + "\n" + dialogList[2])
+        builder.setMessage(dialogList[0])
         builder.create().show()
     }
 
@@ -139,6 +157,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun endGame(){
         Toast.makeText(this, getString(R.string.gameOverMessage, score), Toast.LENGTH_LONG).show()
+        setHighscore()
         resetGame()
     }
 
